@@ -84,7 +84,11 @@ export const login = async (req, res) => {
     return res.status(200).json({
       status: 'success',
       message: 'Login Successful',
-      data: { userId: validUser._id, username: validUser.username },
+      data: {
+        userId: validUser._id,
+        username: validUser.username,
+        token,
+      },
     })
 
   } catch (error) {
@@ -143,7 +147,11 @@ export const google = async (req, res) => {
       return res.status(200).json({
         status: 'success',
         message: 'Login Successful',
-        data: { userId: user._id, username: user.username },
+        data: {
+          userId: user._id,
+          username: user.username,
+          token,
+        },
       })
     } else {
       const generatedPassword =
