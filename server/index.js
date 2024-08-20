@@ -10,7 +10,7 @@ import expenseRoutes from './routers/expenseRoutes.js'
 dotenv.config();
 
 const app = express();
-const PORT = env.process.PORT || 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors({
   // origin: 'http://localhost:5173',
