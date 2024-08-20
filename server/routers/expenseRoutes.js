@@ -4,11 +4,11 @@ import { verifyUser } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.route('/createexpenses').post(createExpense);
-router.route('/getallexpenses').get(getAllExpenses);
-router.route('/getexpenses/:id').get(getExpenses);
-router.route('/expenses/:id').delete(deleteExpense);
-router.route('/expenses/update/:id').patch(updateExpense);
-router.route('/expenses/expense/:expenseId').get(getExpensesById);
+router.route('/createexpenses').post(verifyUser, createExpense);
+router.route('/getallexpenses').get(verifyUser, getAllExpenses);
+router.route('/getexpenses/:id').get(verifyUser, getExpenses);
+router.route('/expenses/:id').delete(verifyUser, deleteExpense);
+router.route('/expenses/update/:id').patch(verifyUser, updateExpense);
+router.route('/expenses/expense/:expenseId').get(verifyUser, getExpensesById);
 
 export default router;
