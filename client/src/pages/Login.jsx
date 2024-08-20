@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserLoginMutation } from "../features/auth/authApi";
+import { useUserLoginMutation, useVerifiedMutation } from "../features/auth/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "../features/auth/authSlice";
@@ -15,6 +15,7 @@ const Login = () => {
   const dispatch = useDispatch()
   const nav = useNavigate();
   const [login] = useUserLoginMutation()
+  const [verified] = useVerifiedMutation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
