@@ -119,11 +119,11 @@ const Login = () => {
                   <div className="space-y-4 py-6">
                     <div className="space-y-2">
                       <h3>Email</h3>
-                      <input type="email" className="border p-3 w-full" placeholder=" Johndoe@gmail.com" name="email" value={FormData.email} onChange={handleChange} />
+                      <input type="email" className="border p-3 w-full" placeholder=" Johndoe@gmail.com" name="email" value={formData.email} onChange={handleChange} />
                     </div>
                     <div className="space-y-2">
                       <h3>Password</h3>
-                      <input type="password" className="border p-3 w-full" name="password" value={FormData.password} onChange={handleChange} placeholder="**********" />
+                      <input type="password" className="border p-3 w-full" name="password" value={formData.password} onChange={handleChange} placeholder="**********" />
                     </div>
                     <button type="submit" className="text-center p-3 bg-primary text-white text-lg uppercase w-full rounded-sm hover:bg-blue-800">Sign In</button>
                   </div>
