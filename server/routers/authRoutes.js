@@ -9,7 +9,7 @@ const router = express.Router();
 router.route('/signup').post(register);
 router.route('/signin').post(login);
 router.route('/logout').post(logout);
-router.route('/verify').get(verifyUser, checkUser);
+router.route('/verify').get(checkUser);
 router.route('/google').post(google);
 
 export default router;
