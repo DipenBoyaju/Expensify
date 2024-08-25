@@ -1,40 +1,42 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { authApi } from '../features/auth/authApi';
-import authReducer from '../features/auth/authSlice';
-import { persistStore, persistReducer } from 'redux-persist';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
+import { persistReducer, persistStore } from 'redux-persist'
+import { authApi } from '../features/auth/authApi';
 import { budgetApi } from '../features/Budget/budgetApi';
 import { expenseApi } from '../features/Expense/ExpenseApi';
-import themeReducer from '../features/theme/themeSlice.js'
+import userReducer from '../features/auth/authSlice'
+
+
+const rootReducer = combineReducers({
+  user: userReducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [budgetApi.reducerPath]: budgetApi.reducer,
+  [expenseApi.reducerPath]: expenseApi.reducer,
+
+});
 
 const persistConfig = {
-  key: 'auth',
+  key: 'root',
+  version: 1,
   storage,
-  whitelist: ['auth'],
-};
+  blacklist: ['authApi', 'budgetApi', 'expenseApi'],
+}
 
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 
 export const store = configureStore({
-  reducer: {
-    [authApi.reducerPath]: authApi.reducer,
-    [budgetApi.reducerPath]: budgetApi.reducer,
-    [expenseApi.reducerPath]: expenseApi.reducer,
-    auth: persistedAuthReducer,
-    theme: themeReducer
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
-        ignoredPaths: ['persist.purge'],
-      },
-    }).concat(
-      authApi.middleware,
-      budgetApi.middleware,
-      expenseApi.middleware,
-    ),
-});
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(
+    {
+      serializableCheck: false,
+    }
+  ).concat(
+    authApi.middleware,
+    budgetApi.middleware,
+    expenseApi.middleware,
+  )
+})
 
-export const persistor = persistStore(store);
+
+export const persistor = persistStore(store)

@@ -29,11 +29,9 @@ const Login = () => {
 
     try {
       const response = await login(formData).unwrap();
-      console.log(formData);
-      console.log(response.data);
 
       if (response.status === 'success') {
-        dispatch(setCredentials(response?.data));
+        dispatch(setCredentials(response.user));
 
         toast.success(response.message, {
           position: "top-right"

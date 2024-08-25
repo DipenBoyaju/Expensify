@@ -1,8 +1,8 @@
+import { useSelector } from 'react-redux';
 import dashboard from '../assets/images/dashboard.png'
-import { useCheckUserQuery } from '../features/auth/authApi';
 
 const Hero = () => {
-  const { data } = useCheckUserQuery();
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <section className="bg-gray-50 flex flex-col items-center">
       <div className="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center">
@@ -19,10 +19,10 @@ const Hero = () => {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a
               className="block w-full rounded bg-primary px-12 py-3 text-sm font-medium text-white shadow hover:bg-blue-800 focus:outline-none focus:ring active:bg-blue-800 sm:w-auto"
-              href={`${!data ? '/signin' : '/dashboard'}`}
+              href={`${!currentUser ? '/signin' : '/dashboard'}`}
             >
               {
-                !data ? 'Get Started' : 'Dashboard'
+                !currentUser ? 'Get Started' : 'Dashboard'
               }
             </a>
           </div>

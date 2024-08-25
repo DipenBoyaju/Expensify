@@ -4,8 +4,7 @@ import Expense from "../models/ExpenseModel.js";
 export const createBudget = async (req, res) => {
   const { name, amount } = req.body;
 
-  const userId = req.user._id;
-  console.log(userId);
+  const userId = req.user.id;
 
   if (!userId) {
     return res.status(401).json({
@@ -29,7 +28,6 @@ export const createBudget = async (req, res) => {
     });
 
     await newBudget.save();
-    console.log(newBudget);
 
     res.status(201).json({
       status: 'success',
@@ -46,7 +44,7 @@ export const createBudget = async (req, res) => {
 
 export const getBudgets = async (req, res) => {
   try {
-    const budgets = await Budget.find({ user: req.user._id });
+    const budgets = await Budget.find({ user: req.user.id });
     res.status(200).json({
       status: 'success',
       data: budgets,
@@ -64,7 +62,7 @@ export const getBudgetById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const budget = await Budget.findById(id).where({ user: req.user._id });
+    const budget = await Budget.findById(id).where({ user: req.user.id });
 
     if (!budget) {
       return res.status(404).json({
@@ -92,7 +90,7 @@ export const editBudget = async (req, res) => {
 
   try {
     const updatedBudget = await Budget.findOneAndUpdate(
-      { _id: id, user: req.user._id },
+      { _id: id, user: req.user.id },
       { name, amount },
       { new: true, runValidators: true }
     );
@@ -122,8 +120,8 @@ export const editBudget = async (req, res) => {
 export const deleteBudget = async (req, res) => {
   const { id } = req.params;
   try {
-    await Expense.deleteMany({ budget: id, user: req.user._id })
-    const response = await Budget.findOneAndDelete({ _id: id, user: req.user._id });
+    await Expense.deleteMany({ budget: id, user: req.user.id })
+    const response = await Budget.findOneAndDelete({ _id: id, user: req.user.id });
 
     if (!response) {
       return res.status(404).json({

@@ -37,14 +37,6 @@ export const authApi = createApi({
       invalidatesTags: ['User']
     }),
 
-    checkUser: builder.query({
-      query: () => ({
-        url: '/verify',
-        method: 'GET',
-      }),
-      providesTags: ['User']
-    }),
-
     googleSign: builder.mutation({
       query: (userData) => ({
         url: '/google',
@@ -57,4 +49,4 @@ export const authApi = createApi({
   })
 })
 
-export const { useUserRegisterMutation, useUserLoginMutation, useCheckUserQuery, useLogoutMutation, useGoogleSignMutation } = authApi;
+export const { useUserRegisterMutation, useUserLoginMutation, useLogoutMutation, useGoogleSignMutation } = authApi;

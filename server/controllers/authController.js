@@ -75,7 +75,9 @@ export const login = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.cookie('access_token', token, {
+    const { password: hashedPassword, ...userData } = validUser._doc;
+
+    res.cookie('token', token, {
       httpOnly: true,
       secure: false,
       maxAge: 3600000,
@@ -84,11 +86,7 @@ export const login = async (req, res) => {
     return res.status(200).json({
       status: 'success',
       message: 'Login Successful',
-      data: {
-        userId: validUser._id,
-        username: validUser.username,
-        token,
-      },
+      user: userData,
     })
 
   } catch (error) {
@@ -100,28 +98,11 @@ export const login = async (req, res) => {
 }
 
 export const logout = (req, res) => {
-  res.clearCookie('access_token');
+  res.clearCookie('token', { httpOnly: true, });
   res.status(200).json({
     status: 'success',
     message: 'Successfully Logged Out'
   })
-}
-
-export const checkUser = (req, res) => {
-  console.log(req.user);
-
-  if (req.user) {
-    res.status(200).json({
-      success: true,
-      message: 'User is authenticated',
-      user: req.user,
-    });
-  } else {
-    res.status(401).json({
-      success: false,
-      message: 'User is not authenticated',
-    });
-  }
 }
 
 export const google = async (req, res) => {
@@ -138,9 +119,9 @@ export const google = async (req, res) => {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: '1h',
       });
-      // const { password, ...rest } = user._doc;
+      const { password, ...userData } = user._doc;
 
-      res.cookie('access_token', token, {
+      res.cookie('token', token, {
         httpOnly: true,
         secure: false,
         maxAge: 3600000,
@@ -149,11 +130,7 @@ export const google = async (req, res) => {
       return res.status(200).json({
         status: 'success',
         message: 'Login Successful',
-        data: {
-          userId: user._id,
-          username: user.username,
-          token,
-        },
+        user: userData,
       })
     } else {
       const generatedPassword =
@@ -166,11 +143,11 @@ export const google = async (req, res) => {
         password: hashedPassword,
       });
       await newUser.save();
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
         expiresIn: '1h',
       });
-
-      res.cookie('access_token', token, {
+      const { password, ...userData } = newUser._doc;
+      res.cookie('token', token, {
         httpOnly: true,
         secure: false,
         maxAge: 3600000,
@@ -179,7 +156,7 @@ export const google = async (req, res) => {
       return res.status(200).json({
         status: 'success',
         message: 'Signup Successful',
-        data: { userId: user._id, username: user.username },
+        user: userData,
       })
     }
   } catch (error) {
@@ -189,4 +166,4 @@ export const google = async (req, res) => {
       message: 'Internal server error',
     });
   }
-};
+}; 

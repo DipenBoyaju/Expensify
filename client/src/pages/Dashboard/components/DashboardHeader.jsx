@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useCheckUserQuery, useLogoutMutation } from "../../../features/auth/authApi";
+import { useLogoutMutation } from "../../../features/auth/authApi";
 import { IoLogOut } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { removeCredentials } from "../../../features/auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CgMenuCheese } from "react-icons/cg";
+import { persistor } from "../../../app/store";
 
 const Menu = () => {
   const [logout] = useLogoutMutation()
@@ -18,10 +19,10 @@ const Menu = () => {
       const response = await logout().unwrap();
       if (response.status === 'success') {
         // setShowMenu(false)
-        dispatch(removeCredentials(''));
-        console.log(response.message);
+        dispatch(removeCredentials());
+        persistor.purge();
         nav('/')
-        window.location.reload();
+        // window.location.reload();
         toast.success(response.message, {
           position: "top-right"
         });
@@ -43,7 +44,7 @@ const Menu = () => {
 }
 
 const DashboardHeader = ({ setSideMenu }) => {
-  const { data } = useCheckUserQuery();
+  const { currentUser } = useSelector((state) => state.user);
   const [showMenu, setShowMenu] = useState(false)
   return (
     <div className="p-5 shadow-sm border-b flex justify-between items-center">
@@ -52,8 +53,8 @@ const DashboardHeader = ({ setSideMenu }) => {
         <h1 className="capitalize font-semibold text-lg">Manage your expense 💸 💰</h1>
       </div>
       <div className=" flex gap-2 items-center">
-        <h1 className="text-lg">Welcome, <span className="font-semibold text-primary">{data?.user?.username}</span></h1>
-        <span onClick={() => setShowMenu((prev) => !prev)} className="bg-primary text-white h-10 w-10 text-lg text-center rounded-lg border-2 border-blue-600 uppercase font-bold pt-1 cursor-pointer">{data?.user?.username.charAt(0)}</span>
+        <h1 className="text-lg">Welcome, <span className="font-semibold text-primary">{currentUser.username}</span></h1>
+        <span onClick={() => setShowMenu((prev) => !prev)} className="bg-primary text-white h-10 w-10 text-lg text-center rounded-lg border-2 border-blue-600 uppercase font-bold pt-1 cursor-pointer">{currentUser.username.charAt(0)}</span>
       </div>
       {
         showMenu ?

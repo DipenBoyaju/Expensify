@@ -32,7 +32,6 @@ async function startServer() {
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${process.env.PORT}`);
-
     })
 
   } catch (error) {

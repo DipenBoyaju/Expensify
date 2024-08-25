@@ -1,48 +1,32 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import jwt from "jsonwebtoken";
 
-export const verifyUser = async (req, res, next) => {
+export const verifyUser = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'you need to login'
+    })
+  }
+
   try {
-    const token = req.cookies.token;
-    console.log('TOKEN', req.cookies.token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Not Authenticated'
+    if (!decoded) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'token is invalid'
       })
     }
 
-    const verified = jwt.verify(token, process.env.JWT_SECRET)
+    req.user = decoded;
 
-    req.user = await User.findById(verified.id)
-
-    if (!req.user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not Found'
-      })
-    }
-    next()
+    next();
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
-      return res.status(401).json({
-        success: false,
-        message: 'Token expired',
-      });
-    }
-
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid token',
-      });
-    }
-
-    // General error handling
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error',
+    return res.status(403).json({
+      status: 'error',
+      message: 'Invalid or expired token',
     });
   }
 }

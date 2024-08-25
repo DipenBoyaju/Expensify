@@ -25,13 +25,17 @@ const AddExpense = ({ budgetId }) => {
       const response = await createExpense(formData).unwrap();
 
       if (response.status === 'success') {
-        console.log(response.message);
         setFormData({ name: '', amount: '', budgetId: budgetId });
         toast.success(response.message, {
           position: "top-right"
         });
 
+      } else if (response.status === 'error') {
+        toast.error(response.message, {
+          position: 'bottom-right'
+        });
       }
+
     } catch (error) {
       console.log('Adding bufget:', error);
       toast.error(error.message, {

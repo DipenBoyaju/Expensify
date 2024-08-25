@@ -1,16 +1,16 @@
 import { RiCopperCoinFill } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
-import { useCheckUserQuery, useLogoutMutation } from "../features/auth/authApi";
+import { Link } from "react-router-dom";
+import { useLogoutMutation } from "../features/auth/authApi";
 import { MdDashboard } from "react-icons/md";
 import { IoLogOut } from "react-icons/io5";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeCredentials } from "../features/auth/authSlice";
+import { persistor } from "../app/store";
 
-const Menu = () => {
+const Menu = ({ setShowMenu }) => {
   const [logout] = useLogoutMutation()
-  const nav = useNavigate();
   const dispatch = useDispatch();
 
 
@@ -18,10 +18,10 @@ const Menu = () => {
     try {
       const response = await logout().unwrap();
       if (response.status === 'success') {
-        // setShowMenu(false)
+        setShowMenu(false)
         dispatch(removeCredentials());
-        window.location.reload();
-        nav('/')
+        persistor.purge();
+
         toast.success(response.message, {
           position: "top-right"
         });
@@ -45,8 +45,8 @@ const Menu = () => {
 }
 
 const Header = () => {
-  const { data } = useCheckUserQuery();
   const [showMenu, setShowMenu] = useState(false)
+  const { currentUser } = useSelector((state) => state.user)
 
   return (
     <header className="flex justify-between items-center border-b border-zinc-300 p-4">
@@ -56,19 +56,19 @@ const Header = () => {
       </div>
       <div className="">
         {
-          !data ?
+          !currentUser ?
             <Link to='/signin'>
               <button className="bg-primary text-white p-2 px-5 hover:bg-blue-800 rounded-md text-sm">Get Started</button>
             </Link> :
             <div className=" flex gap-2 items-center">
-              <h1 className="text-lg">Welcome, <span className="font-semibold text-primary">{data.user.username}</span></h1>
-              <span onClick={() => setShowMenu((prev) => !prev)} className="bg-primary text-white h-10 w-10 text-lg text-center rounded-lg border-2 border-blue-600 uppercase font-bold pt-1 cursor-pointer">{data.user.username.charAt(0)}</span>
+              <h1 className="text-lg">Welcome, <span className="font-semibold text-primary">{currentUser.username}</span></h1>
+              <span onClick={() => setShowMenu((prev) => !prev)} className="bg-primary text-white h-10 w-10 text-lg text-center rounded-lg border-2 border-blue-600 uppercase font-bold pt-1 cursor-pointer">{currentUser.username.charAt(0)}</span>
             </div>
         }
       </div>
       {
         showMenu ?
-          <Menu /> :
+          <Menu setShowMenu={setShowMenu} /> :
           ''
       }
     </header>

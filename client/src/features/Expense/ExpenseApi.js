@@ -30,7 +30,7 @@ export const expenseApi = createApi({
 
     getExpense: builder.query({
       query: (id) => ({
-        url: `/getexpenses/${id}`,
+        url: `/getexpensesbybudget/${id}`,
         method: 'GET',
       }),
       providesTags: ['Expenses']
@@ -38,7 +38,7 @@ export const expenseApi = createApi({
 
     deleteExpense: builder.mutation({
       query: (id) => ({
-        url: `/expenses/${id}`,
+        url: `/deleteexpenses/${id}`,
         method: 'DELETE'
       }),
       invalidatesTags: ['Expenses']

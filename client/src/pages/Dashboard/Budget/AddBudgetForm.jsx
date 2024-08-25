@@ -26,7 +26,6 @@ const AddBudgetForm = ({ setShowForm }) => {
       const response = await createBudget(formData).unwrap();
 
       if (response.status === 'success') {
-        console.log(response.message);
         toast.success(response.message, {
           position: "top-right"
         });
@@ -34,7 +33,7 @@ const AddBudgetForm = ({ setShowForm }) => {
         setShowForm(false);
       }
     } catch (error) {
-      console.log('Adding bufdet:', error);
+      console.log('Adding budget:', error);
       toast.error(error.message, {
         position: "top-right"
       });

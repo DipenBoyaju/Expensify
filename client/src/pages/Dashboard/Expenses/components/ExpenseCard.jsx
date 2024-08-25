@@ -7,8 +7,7 @@ import ExpenseListLoader from "./ExpenseListLoader";
 
 const ExpenseCard = ({ expenses, isLoading }) => {
   const [showForm, setShowForm] = useState(false);
-  const [currentExpenseId, setCurrentExpenseId] = useState(null);
-  console.log('card', expenses);
+  const [currentExpenseId, setCurrentExpenseId] = useState('');
   const [deleteExpense] = useDeleteExpenseMutation();
 
   const handleEdit = (expenseId) => {
@@ -19,7 +18,7 @@ const ExpenseCard = ({ expenses, isLoading }) => {
   const handleDelete = async (expenseId) => {
     try {
       const response = await deleteExpense(expenseId).unwrap();
-      console.log();
+
       if (response.status === 'success') {
         console.log(response.message);
         toast.success(response.message, {

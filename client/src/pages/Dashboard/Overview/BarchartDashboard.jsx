@@ -24,7 +24,7 @@ const BarchartDashboard = () => {
       <ResponsiveContainer width={'80%'} height={300}>
         <BarChart data={combinedData} margin={{ top: 7 }}>
           <XAxis dataKey='name' />
-          <YAxis />
+          <YAxis dataKey='amount' />
           <Tooltip />
           <Legend />
           <Bar dataKey='Spent' stackId='a' fill='#4845d2' />

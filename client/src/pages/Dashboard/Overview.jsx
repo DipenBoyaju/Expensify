@@ -1,4 +1,4 @@
-import { useCheckUserQuery } from "../../features/auth/authApi";
+import { useSelector } from "react-redux";
 import { useGetBudgetQuery } from "../../features/Budget/budgetApi";
 import BudgetItem from "./Budget/BudgetItem";
 import BudgetCardLoader from "./Budget/components/BudgetCardLoader";
@@ -8,12 +8,12 @@ import CardLoader from "./Overview/component/CardLoader";
 import LatestExpense from "./Overview/LatestExpense";
 
 const Overview = () => {
-  const { data } = useCheckUserQuery();
+  const { currentUser } = useSelector((state) => state.user);
   const { data: budgets, isLoading } = useGetBudgetQuery();
   return (
     <div className='py-5'>
       <div className="pb-5">
-        <h2 className="font-bold text-3xl">Hi, {data?.user?.username}</h2>
+        <h2 className="font-bold text-3xl">Hi, {currentUser.username}</h2>
         <p className='text-gray-500'>Here&apos;s what happening with your money, Let&apos;s Manage your expense.</p>
       </div>
       {

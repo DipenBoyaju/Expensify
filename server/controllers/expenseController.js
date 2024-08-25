@@ -4,10 +4,7 @@ import Expense from "../models/ExpenseModel.js";
 export const createExpense = async (req, res) => {
   const { name, amount, budgetId } = req.body;
 
-  const userId = req.user._id;
-  // const budgetId = 
-  console.log(userId);
-  // console.log(budgetId);
+  const userId = req.user.id;
 
 
   if (!userId) {
@@ -32,6 +29,23 @@ export const createExpense = async (req, res) => {
         message: 'Budget not found',
       });
     }
+
+    const totalSpent = await Expense.aggregate([
+      { $match: { budget: budgetId } },
+      { $group: { _id: "$name", total: { $sum: "$amount" } } }
+    ]);
+
+    const totalSpentAmount = totalSpent.length ? totalSpent[0].total : 0;
+    const remainingBudget = budget.amount - totalSpentAmount;
+
+    // Check if expense amount exceeds the remaining budget
+    if (amount > remainingBudget) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Expense amount exceeds the remaining budget',
+      });
+    }
+
     const newExpense = new Expense({
       name,
       amount,
@@ -40,11 +54,10 @@ export const createExpense = async (req, res) => {
     });
 
     await newExpense.save();
-    console.log(newExpense);
 
     res.status(201).json({
       status: 'success',
-      message: 'Budget Added Successfully'
+      message: 'Expense Added Successfully'
     })
   } catch (error) {
     console.error(error);
@@ -57,7 +70,7 @@ export const createExpense = async (req, res) => {
 
 export const getAllExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.find({ user: req.user._id })
+    const expenses = await Expense.find({ user: req.user.id })
 
     if (!expenses.length) {
       return res.status(404).json({ message: 'Expense not found' });
@@ -76,11 +89,11 @@ export const getAllExpenses = async (req, res) => {
   }
 }
 
-export const getExpenses = async (req, res) => {
+export const getExpensesByBudget = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const expenses = await Expense.find({ budget: id, user: req.user._id });
+    const expenses = await Expense.find({ budget: id, user: req.user.id });
     if (!expenses.length) {
       return res.status(404).json({ message: 'Expense not found' });
     }
@@ -101,7 +114,7 @@ export const getExpensesById = async (req, res) => {
   const { expenseId } = req.params;
 
   try {
-    const expense = await Expense.findOne({ _id: expenseId, user: req.user._id });
+    const expense = await Expense.findOne({ _id: expenseId, user: req.user.id });
 
     if (!expense) {
       return res.status(404).json({
@@ -127,7 +140,7 @@ export const getExpensesById = async (req, res) => {
 export const deleteExpense = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     const expense = await Expense.findOneAndDelete({ _id: id, user: userId })
 
@@ -154,7 +167,7 @@ export const updateExpense = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, amount } = req.body;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     const updatedexpense = await Expense.findOneAndUpdate(
       { _id: id, user: userId }, { name, amount },

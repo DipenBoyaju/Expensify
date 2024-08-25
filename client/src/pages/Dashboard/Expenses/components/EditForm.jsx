@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { RxCross2 } from "react-icons/rx"
 import { toast } from "react-toastify"
 import { useGetExpenseByIdQuery, useUpdateExpenseMutation } from "../../../../features/Expense/ExpenseApi"
-import { useParams } from 'react-router-dom'
 
 const EditForm = ({ setShowForm, expenseId }) => {
 

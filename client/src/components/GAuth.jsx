@@ -23,14 +23,11 @@ const GAuth = () => {
         username: resultsFromGoogle.user.displayName,
         email: resultsFromGoogle.user.email
       };
-      console.log(userData)
 
       const response = await google(userData).unwrap();
-      console.log(response);
-      console.log(response?.data);
 
       if (response.status === 'success') {
-        dispatch(setCredentials(response?.data))
+        dispatch(setCredentials(response.user))
         toast.success(response.message, {
           position: "top-right"
         });
