@@ -79,8 +79,8 @@ export const login = async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'Strict',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'None', // Allow cross-site cookies
       maxAge: 3600000,
     })
 
@@ -124,8 +124,8 @@ export const google = async (req, res) => {
 
       res.cookie('token', token, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'Strict',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'None', // Allow cross-site cookies
         maxAge: 3600000,
       })
 
@@ -151,8 +151,8 @@ export const google = async (req, res) => {
       const { password, ...userData } = newUser._doc;
       res.cookie('token', token, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'Strict',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'None', // Allow cross-site cookies
         maxAge: 3600000,
       })
 
